@@ -10,6 +10,9 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <!-- Entities are listed here one by one as we create them (see section 5) -->
+        <class>com.clinicmanager.model.User</class>
+        <class>com.clinicmanager.model.Department</class>
+        <class>com.clinicmanager.model.Specialty</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
