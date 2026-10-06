@@ -1,0 +1,10 @@
+.env
+target/
+deploy/*
+!deploy/.gitkeep
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/

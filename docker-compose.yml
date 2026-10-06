@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: clinicflow-db
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - clinicflow-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  tomcat:
+    image: tomcat:10.1-jdk17
+    container_name: clinicflow-tomcat
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./deploy:/usr/local/tomcat/webapps
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  clinicflow-data:
