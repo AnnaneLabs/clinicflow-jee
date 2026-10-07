@@ -13,6 +13,12 @@
         <class>com.clinicmanager.model.User</class>
         <class>com.clinicmanager.model.Department</class>
         <class>com.clinicmanager.model.Specialty</class>
+        <class>com.clinicmanager.model.Patient</class>
+        <class>com.clinicmanager.model.Doctor</class>
+        <class>com.clinicmanager.model.Availability</class>
+        <class>com.clinicmanager.model.Absence</class>
+        <class>com.clinicmanager.model.Appointment</class>
+        <class>com.clinicmanager.model.MedicalNote</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
