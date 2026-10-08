@@ -1,6 +1,7 @@
 package com.clinicmanager.repository;
 
 import com.clinicmanager.model.Doctor;
+import com.clinicmanager.model.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -86,5 +87,29 @@ public class DoctorRepository extends BaseRepository<Doctor, Long> {
                 ORDER BY u.lastName, u.firstName
                 """, Doctor.class)
                 .getResultList());
+    }
+
+    /**
+     * Saves a new account and its doctor profile in ONE transaction:
+     * if the doctor insert fails, the user insert is rolled back too.
+     */
+    public Doctor saveWithUser(User user, Doctor doctor) {
+        return inTransaction(em -> {
+            em.persist(user);
+            doctor.setUser(user);
+            em.persist(doctor);
+            return doctor;
+        });
+    }
+
+    /**
+     * Updates the doctor AND the account in one transaction.
+     * The doctor-to-user relationship has no cascade, so the user must be merged explicitly.
+     */
+    public Doctor updateWithUser(Doctor doctor) {
+        return inTransaction(em -> {
+            em.merge(doctor.getUser());
+            return em.merge(doctor);
+        });
     }
 }

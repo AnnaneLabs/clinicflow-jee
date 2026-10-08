@@ -6,34 +6,26 @@ import com.clinicmanager.exception.DuplicateEmailException;
 import com.clinicmanager.exception.InvalidCredentialsException;
 import com.clinicmanager.exception.UnauthorizedActionException;
 import com.clinicmanager.exception.UserNotFoundException;
-import com.clinicmanager.exception.ValidationException;
 import com.clinicmanager.mapper.UserMapper;
 import com.clinicmanager.model.Role;
 import com.clinicmanager.model.User;
 import com.clinicmanager.repository.UserRepository;
+import com.clinicmanager.util.PasswordHasher;
 import jakarta.persistence.PersistenceException;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Locale;
 import java.util.Optional;
-import java.util.regex.Pattern;
+
+import static com.clinicmanager.util.InputRules.blankToNull;
+import static com.clinicmanager.util.InputRules.normalizeEmail;
+import static com.clinicmanager.util.InputRules.requireText;
+import static com.clinicmanager.util.InputRules.validatePassword;
 
 /**
  * Authentication and account rules: registration, login, profile, password change.
  * Business logic lives here; data access is delegated to UserRepository.
  */
 public class AuthService {
-
-    static final int MIN_PASSWORD_LENGTH = 6;
-    /** BCrypt only uses the first 72 bytes; longer passwords would be silently truncated. */
-    static final int MAX_PASSWORD_LENGTH = 72;
-    private static final int BCRYPT_COST = 10;
-
-    private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
-
-    /** Used to spend the same time on login even when the email does not exist. */
-    private static final String DUMMY_HASH =
-            BCrypt.hashpw("dummy-password", BCrypt.gensalt(BCRYPT_COST));
 
     private final UserRepository userRepository;
 
@@ -64,7 +56,7 @@ public class AuthService {
         user.setLastName(cleanLastName);
         user.setEmail(cleanEmail);
         user.setPhone(blankToNull(phone));
-        user.setPasswordHash(hash(password));
+        user.setPasswordHash(PasswordHasher.hash(password));
         user.setRole(Role.PATIENT);
         user.setActive(true);
 
@@ -89,9 +81,9 @@ public class AuthService {
 
         Optional<User> found = userRepository.findByEmail(cleanEmail);
 
-        // Always run one BCrypt check, so an unknown email takes as long as a wrong password.
-        String hashToCheck = found.map(User::getPasswordHash).orElse(DUMMY_HASH);
-        boolean passwordMatches = BCrypt.checkpw(candidate, hashToCheck);
+        // With no user, matches() still spends one BCrypt check and returns false.
+        boolean passwordMatches = PasswordHasher.matches(
+                candidate, found.map(User::getPasswordHash).orElse(null));
 
         // Same error for "no such email" and "wrong password": no user enumeration.
         if (found.isEmpty() || !passwordMatches) {
@@ -123,54 +115,18 @@ public class AuthService {
     public void changePassword(Long userId, String currentPassword, String newPassword) {
         User user = loadUser(userId);
 
-        if (currentPassword == null || !BCrypt.checkpw(currentPassword, user.getPasswordHash())) {
+        if (currentPassword == null
+                || !PasswordHasher.matches(currentPassword, user.getPasswordHash())) {
             throw new UnauthorizedActionException("Current password is incorrect.");
         }
         validatePassword(newPassword);
 
-        user.setPasswordHash(hash(newPassword));
+        user.setPasswordHash(PasswordHasher.hash(newPassword));
         userRepository.update(user);
     }
-
-    // ------------------------------------------------------------------ helpers
 
     private User loadUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
-    }
-
-    private static String requireText(String value, String fieldName) {
-        if (value == null || value.isBlank()) {
-            throw new ValidationException(fieldName + " is required.");
-        }
-        return value.trim();
-    }
-
-    /** Trim and lowercase, so "Sara@X.com" and "sara@x.com" are the same account. */
-    private static String normalizeEmail(String email) {
-        String clean = requireText(email, "Email").toLowerCase(Locale.ROOT);
-        if (!EMAIL.matcher(clean).matches()) {
-            throw new ValidationException("Invalid email address.");
-        }
-        return clean;
-    }
-
-    private static void validatePassword(String password) {
-        if (password == null || password.length() < MIN_PASSWORD_LENGTH) {
-            throw new ValidationException(
-                    "Password must be at least " + MIN_PASSWORD_LENGTH + " characters.");
-        }
-        if (password.length() > MAX_PASSWORD_LENGTH) {
-            throw new ValidationException(
-                    "Password must be at most " + MAX_PASSWORD_LENGTH + " characters.");
-        }
-    }
-
-    private static String hash(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt(BCRYPT_COST));
-    }
-
-    private static String blankToNull(String value) {
-        return (value == null || value.isBlank()) ? null : value.trim();
     }
 }
