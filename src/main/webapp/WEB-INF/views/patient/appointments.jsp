@@ -143,7 +143,7 @@
                           </td>
                           <td><span class="subtle-pill"><c:out value="${app.type}"/></span></td>
                           <td>
-                            <span class="status-pill <c:if test="${app.status == 'CANCELED'}">inactive</c:if> <c:if test="${app.status == 'COMPLETED'}">pending</c:if>">
+                            <span class="status-pill <c:if test="${app.status.name() == 'CANCELED'}">inactive</c:if> <c:if test="${app.status.name() == 'DONE'}">pending</c:if>">
                               <c:out value="${app.status}"/>
                             </span>
                           </td>
