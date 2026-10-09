@@ -26,6 +26,9 @@
       </a>
 
       <c:if test="${sessionScope.user.role == 'DOCTOR'}">
+        <a class="nav-item" href="${pageContext.request.contextPath}/doctor/appointments">
+          <span class="nav-icon">📅</span> Patient Appointments
+        </a>
         <a class="nav-item" href="${pageContext.request.contextPath}/doctor/availability">
           <span class="nav-icon">⏰</span> Working Hours
         </a>
@@ -99,8 +102,24 @@
 
       <!-- Role-specific Features Grid -->
       <c:if test="${sessionScope.user.role == 'DOCTOR'}">
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:28px;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:20px; margin-bottom:28px;">
           
+          <a href="${pageContext.request.contextPath}/doctor/appointments" class="stat-card" style="display:block; text-decoration:none;">
+            <div class="stat-top">
+              <span class="stat-label">PATIENT CONSULTATIONS</span>
+              <div class="stat-icon icon-blue">📅</div>
+            </div>
+            <div style="font-family:'Manrope',sans-serif; font-size:18px; font-weight:800; color:var(--dark); margin:12px 0 6px;">
+              Patient Appointments
+            </div>
+            <p class="muted" style="font-size:12.5px; line-height:1.5; margin-bottom:14px;">
+              View upcoming patient appointments, accept, cancel, or update consultation status.
+            </p>
+            <div style="font-size:12px; font-weight:700; color:#2563EB; display:flex; align-items:center; gap:6px;">
+              View Appointments &rarr;
+            </div>
+          </a>
+
           <a href="${pageContext.request.contextPath}/doctor/availability" class="stat-card" style="display:block; text-decoration:none;">
             <div class="stat-top">
               <span class="stat-label">SCHEDULE MANAGEMENT</span>
