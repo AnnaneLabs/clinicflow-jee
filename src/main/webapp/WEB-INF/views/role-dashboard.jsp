@@ -97,7 +97,7 @@
         </div>
       </div>
 
-      <!-- Role-specific Features Grid -->
+      <!-- Doctor Role Features Grid -->
       <c:if test="${sessionScope.user.role == 'DOCTOR'}">
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:20px; margin-bottom:28px;">
           
@@ -150,6 +150,9 @@
           </a>
 
         </div>
+      </c:if>
+
+      <!-- Patient Role Features Grid -->
       <c:if test="${sessionScope.user.role == 'PATIENT'}">
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:28px;">
           
@@ -186,7 +189,7 @@
             <span class="system-symbol">✔</span>
             <div>
               <strong>Your account is active &amp; verified</strong>
-              <p>Select an action from the navigation sidebar or quick cards to manage your schedule.</p>
+              <p>Select an action from the navigation sidebar or quick cards to manage your portal.</p>
             </div>
           </div>
         </article>
@@ -202,6 +205,10 @@
 
           <div style="display:flex; flex-direction:column; gap:10px;">
             <c:if test="${sessionScope.user.role == 'DOCTOR'}">
+              <a href="${pageContext.request.contextPath}/doctor/appointments"
+                 class="btn btn-outline" style="justify-content:flex-start; gap:12px; border-color:#2563EB; color:#2563EB;">
+                <span style="font-size:16px;">📅</span> Patient Appointments
+              </a>
               <a href="${pageContext.request.contextPath}/doctor/availability"
                  class="btn btn-outline" style="justify-content:flex-start; gap:12px; border-color:var(--primary); color:var(--primary);">
                 <span style="font-size:16px;">⏰</span> Manage Working Hours
@@ -209,6 +216,14 @@
               <a href="${pageContext.request.contextPath}/doctor/absence"
                  class="btn btn-outline" style="justify-content:flex-start; gap:12px; border-color:#D97706; color:#D97706;">
                 <span style="font-size:16px;">🌴</span> Declare Absences
+              </a>
+              <div style="height:1px;background:var(--border);margin:4px 0;"></div>
+            </c:if>
+
+            <c:if test="${sessionScope.user.role == 'PATIENT'}">
+              <a href="${pageContext.request.contextPath}/patient/appointments"
+                 class="btn btn-outline" style="justify-content:flex-start; gap:12px; border-color:var(--primary); color:var(--primary);">
+                <span style="font-size:16px;">📅</span> Book a Consultation
               </a>
               <div style="height:1px;background:var(--border);margin:4px 0;"></div>
             </c:if>
