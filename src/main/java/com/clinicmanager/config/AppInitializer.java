@@ -56,6 +56,59 @@ public class AppInitializer implements ServletContextListener {
                     "Emergency", List.of("Emergency Medicine"));
             System.out.println("[AppInitializer] Seeded initial Departments & Specialties.");
         }
+
+        // 3. Seed Doctor User if doctor@clinicflow.com does not exist
+        DoctorRepository doctorRepository = new DoctorRepository();
+        boolean hasDoctor = userRepository.findByEmail("doctor@clinicflow.com").isPresent();
+
+        if (!hasDoctor) {
+            Specialty cardiology = specialtyRepository.findAll().stream()
+                    .filter(s -> "Cardiology".equalsIgnoreCase(s.getName()))
+                    .findFirst()
+                    .orElse(null);
+
+            User doctorUser = new User();
+            doctorUser.setFirstName("Sarah");
+            doctorUser.setLastName("Smith");
+            doctorUser.setEmail("doctor@clinicflow.com");
+            doctorUser.setPhone("0611223344");
+            doctorUser.setPasswordHash(PasswordHasher.hash("Doctor123!"));
+            doctorUser.setRole(Role.DOCTOR);
+            doctorUser.setActive(true);
+
+            Doctor doctor = new Doctor();
+            doctor.setMatricule("DOC-1001");
+            doctor.setTitle("Dr.");
+            doctor.setSpecialty(cardiology);
+
+            doctorRepository.saveWithUser(doctorUser, doctor);
+            System.out.println("[AppInitializer] Seeded default Doctor user: doctor@clinicflow.com / Doctor123!");
+        }
+
+        // 4. Seed Patient User if patient@clinicflow.com does not exist
+        PatientRepository patientRepository = new PatientRepository();
+        boolean hasPatient = userRepository.findByEmail("patient@clinicflow.com").isPresent();
+
+        if (!hasPatient) {
+            User patientUser = new User();
+            patientUser.setFirstName("John");
+            patientUser.setLastName("Doe");
+            patientUser.setEmail("patient@clinicflow.com");
+            patientUser.setPhone("0655667788");
+            patientUser.setPasswordHash(PasswordHasher.hash("Patient123!"));
+            patientUser.setRole(Role.PATIENT);
+            patientUser.setActive(true);
+
+            Patient patient = new Patient();
+            patient.setUser(patientUser);
+            patient.setCin("AB123456");
+            patient.setGender(Gender.MALE);
+            patient.setBloodType(BloodType.O_POSITIVE);
+            patient.setAddress("123 Main Street");
+
+            patientRepository.saveWithUser(patientUser, patient);
+            System.out.println("[AppInitializer] Seeded default Patient user: patient@clinicflow.com / Patient123!");
+        }
     }
 
     private void createDepartmentWithSpecialties(DepartmentRepository deptRepo,

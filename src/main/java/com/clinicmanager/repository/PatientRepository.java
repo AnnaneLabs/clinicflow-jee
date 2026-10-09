@@ -65,4 +65,13 @@ public class PatientRepository extends BaseRepository<Patient, Long> {
                 """, Patient.class)
                 .getResultList());
     }
+
+    public Patient saveWithUser(com.clinicmanager.model.User user, Patient patient) {
+        return inTransaction(em -> {
+            em.persist(user);
+            patient.setUser(user);
+            em.persist(patient);
+            return patient;
+        });
+    }
 }
