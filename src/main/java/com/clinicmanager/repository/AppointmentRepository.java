@@ -21,6 +21,8 @@ public class AppointmentRepository extends BaseRepository<Appointment, Long> {
                 JOIN FETCH p.user
                 JOIN FETCH a.doctor d
                 JOIN FETCH d.user
+                LEFT JOIN FETCH d.specialty s
+                LEFT JOIN FETCH s.department
                 WHERE a.id = :id
                 """, Appointment.class)
                 .setParameter("id", id)
@@ -37,6 +39,8 @@ public class AppointmentRepository extends BaseRepository<Appointment, Long> {
                 JOIN FETCH p.user
                 JOIN FETCH a.doctor d
                 JOIN FETCH d.user
+                LEFT JOIN FETCH d.specialty s
+                LEFT JOIN FETCH s.department
                 WHERE p.id = :patientId
                 ORDER BY a.startTime DESC
                 """, Appointment.class)
@@ -52,6 +56,8 @@ public class AppointmentRepository extends BaseRepository<Appointment, Long> {
                 JOIN FETCH p.user
                 JOIN FETCH a.doctor d
                 JOIN FETCH d.user
+                LEFT JOIN FETCH d.specialty s
+                LEFT JOIN FETCH s.department
                 WHERE d.id = :doctorId
                   AND a.startTime >= :from
                   AND a.startTime < :to
