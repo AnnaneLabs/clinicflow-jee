@@ -38,11 +38,8 @@
       </c:if>
 
       <c:if test="${sessionScope.user.role == 'PATIENT'}">
-        <a class="nav-item" href="#">
-          <span class="nav-icon">📅</span> Book Appointment
-        </a>
-        <a class="nav-item" href="#">
-          <span class="nav-icon">📋</span> My Consultations
+        <a class="nav-item" href="${pageContext.request.contextPath}/patient/appointments">
+          <span class="nav-icon">📅</span> Book Consultations
         </a>
       </c:if>
 
@@ -149,6 +146,26 @@
             </p>
             <div style="font-size:12px; font-weight:700; color:#D97706; display:flex; align-items:center; gap:6px;">
               Declare Absences &rarr;
+            </div>
+          </a>
+
+        </div>
+      <c:if test="${sessionScope.user.role == 'PATIENT'}">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:28px;">
+          
+          <a href="${pageContext.request.contextPath}/patient/appointments" class="stat-card" style="display:block; text-decoration:none;">
+            <div class="stat-top">
+              <span class="stat-label">CONSULTATION BOOKING</span>
+              <div class="stat-icon icon-green">📅</div>
+            </div>
+            <div style="font-family:'Manrope',sans-serif; font-size:18px; font-weight:800; color:var(--dark); margin:12px 0 6px;">
+              Book a Consultation
+            </div>
+            <p class="muted" style="font-size:12.5px; line-height:1.5; margin-bottom:14px;">
+              Select a specialty doctor, view open time slots, and schedule your clinic appointment.
+            </p>
+            <div style="font-size:12px; font-weight:700; color:var(--primary); display:flex; align-items:center; gap:6px;">
+              Book Appointment Now &rarr;
             </div>
           </a>
 

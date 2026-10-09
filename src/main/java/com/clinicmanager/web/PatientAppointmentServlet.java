@@ -35,6 +35,29 @@ public class PatientAppointmentServlet extends HttpServlet {
             return;
         }
 
+        String action = req.getParameter("action");
+        if ("getSlots".equalsIgnoreCase(action)) {
+            try {
+                Long doctorId = Long.parseLong(req.getParameter("doctorId"));
+                LocalDate date = LocalDate.parse(req.getParameter("date"));
+
+                List<LocalTime> slots = appointmentService.getAvailableTimeSlots(doctorId, date);
+                resp.setContentType("application/json");
+                StringBuilder json = new StringBuilder("[");
+                for (int i = 0; i < slots.size(); i++) {
+                    json.append("\"").append(slots.get(i).toString()).append("\"");
+                    if (i < slots.size() - 1) json.append(",");
+                }
+                json.append("]");
+                resp.getWriter().write(json.toString());
+                return;
+            } catch (Exception e) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("[]");
+                return;
+            }
+        }
+
         Patient patient = patientOpt.get();
         List<Appointment> appointments = appointmentService.getPatientAppointments(patient.getId());
         List<Specialty> specialties = specialtyRepository.findAll();
