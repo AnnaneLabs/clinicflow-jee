@@ -10,7 +10,7 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 
-@WebServlet("/admin/departments")
+@WebServlet(urlPatterns = {"/admin/departments", "/admin/department"})
 public class AdminDepartmentServlet extends HttpServlet {
     private DepartmentRepository departmentRepository;
     private SpecialtyRepository specialtyRepository;
