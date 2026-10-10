@@ -29,6 +29,9 @@
         <a class="nav-item" href="${pageContext.request.contextPath}/doctor/appointments">
           <span class="nav-icon">📅</span> Patient Appointments
         </a>
+        <a class="nav-item" href="${pageContext.request.contextPath}/doctor/medical-notes">
+          <span class="nav-icon">📝</span> Clinical Notes &amp; Prescriptions
+        </a>
         <a class="nav-item" href="${pageContext.request.contextPath}/doctor/availability">
           <span class="nav-icon">⏰</span> Working Hours
         </a>
@@ -40,6 +43,9 @@
       <c:if test="${sessionScope.user.role == 'PATIENT'}">
         <a class="nav-item" href="${pageContext.request.contextPath}/patient/appointments">
           <span class="nav-icon">📅</span> Book Consultations
+        </a>
+        <a class="nav-item" href="${pageContext.request.contextPath}/patient/medical-history">
+          <span class="nav-icon">📋</span> Medical History
         </a>
       </c:if>
 
