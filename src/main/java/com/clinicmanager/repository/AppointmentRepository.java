@@ -109,7 +109,22 @@ public class AppointmentRepository extends BaseRepository<Appointment, Long> {
                 .setParameter("canceled", AppointmentStatus.CANCELED)
                 .setParameter("start", start)
                 .setParameter("end", end)
-                .setParameter("excludeId", excludeAppointmentId == null ? -1L : excludeAppointmentId)
+                .setParameter("excludeId", excludeAppointmentId != null ? excludeAppointmentId : -1L)
                 .getSingleResult() > 0);
+    }
+
+    /** All clinic appointments with patient, doctor, specialty, and department loaded. */
+    public List<Appointment> findAllWithDetails() {
+        return readOnly(em -> em.createQuery("""
+                SELECT a FROM Appointment a
+                JOIN FETCH a.patient p
+                JOIN FETCH p.user
+                JOIN FETCH a.doctor d
+                JOIN FETCH d.user
+                LEFT JOIN FETCH d.specialty s
+                LEFT JOIN FETCH s.department
+                ORDER BY a.startTime DESC
+                """, Appointment.class)
+                .getResultList());
     }
 }

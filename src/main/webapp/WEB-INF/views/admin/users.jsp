@@ -33,6 +33,9 @@
       <a class="nav-item active" id="nav-users" href="${pageContext.request.contextPath}/admin/users">
         <span class="nav-icon">♙</span> User Accounts
       </a>
+      <a class="nav-item" id="nav-appointments" href="${pageContext.request.contextPath}/admin/appointments">
+        <span class="nav-icon">📅</span> Appointments
+      </a>
     </nav>
 
     <div class="sidebar-bottom">
